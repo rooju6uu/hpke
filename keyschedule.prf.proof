@@ -1,0 +1,1656 @@
+Initial state
+Game 2 is
+     Ostart() :=
+     cr_key_3 <-R cr_key_t;
+     return(cr_key_3);
+     ((
+       foreach i_1 <= N do
+       Oprf(mode_2: mode_t, info_5: bitstring, psk_2: bitstring, pskID_1: bitstring) :=
+       find [unique] j_1 = j <= N suchthat defined(mode_2[j], info_5[j], psk_2[j], pskID_1[j], r[j]) && (mode_2[j] = mode_2) && (info_5[j] = info_5) && (psk_2[j] = psk_2) && (pskID_1[j] = pskID_1) then
+         return(r[j_1])
+       else
+         r <-R keys_t;
+         return(r)
+     ) | (
+       OH() :=
+       return(cr_key_3)
+     ))
+
+Initial state
+Game 1 is
+     Ostart() :=
+     k <-R kemkey_t;
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       return((shared_secret: kemkey_t <- k; psk_id: bitstring <- pskID; psk_id_hash: cr_output_t <- (salt_3: cr_salt_t <- empty; label_6: label_extract_t <- label_psk_id_hash; labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, psk_id); Extract_CR(cr_key_2, salt_3, labeled_input)); info_hash: cr_output_t <- (salt_4: cr_salt_t <- empty; label_7: label_extract_t <- label_info_hash; labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4); Extract_CR(cr_key_2, salt_4, labeled_input_1)); key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash); secrett: extract_t <- (label_8: label_extract_t <- label_secret; IKM: bitstring <- psk_1; labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, IKM); Extract_PRF(shared_secret, labeled_IKM)); key: key_t <- (label_9: label_expand_t <- label_key; L_3: length_t <- Nk; truncate_to_Nk((labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context); Expand_PRF(secrett, labeledInfo)))); nonce: nonce_t <- (label_10: label_expand_t <- label_nonce; L_4: length_t <- Nn; truncate_to_Nn((labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context); Expand_PRF(secrett, labeledInfo_1)))); exporter_secret: extract_t <- (label_11: label_expand_t <- label_exp; L_5: length_t <- Nh; truncate_to_Nh((labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context); Expand_PRF(secrett, labeledInfo_2)))); concat(key, nonce, exporter_secret)))
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying expand
+  - Expand if/find/let
+yields
+
+Game 3 is
+     Ostart() :=
+     k <-R kemkey_t;
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       shared_secret: kemkey_t <- k;
+       psk_id: bitstring <- pskID;
+       salt_3: cr_salt_t <- empty;
+       label_6: label_extract_t <- label_psk_id_hash;
+       labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, psk_id);
+       psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+       salt_4: cr_salt_t <- empty;
+       label_7: label_extract_t <- label_info_hash;
+       labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+       info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+       key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+       label_8: label_extract_t <- label_secret;
+       IKM: bitstring <- psk_1;
+       labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, IKM);
+       secrett: extract_t <- Extract_PRF(shared_secret, labeled_IKM);
+       label_9: label_expand_t <- label_key;
+       L_3: length_t <- Nk;
+       labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+       key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
+       label_10: label_expand_t <- label_nonce;
+       L_4: length_t <- Nn;
+       labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+       nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+       label_11: label_expand_t <- label_exp;
+       L_5: length_t <- Nh;
+       labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+       exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(secrett, labeledInfo_2));
+       return(concat(key, nonce, exporter_secret))
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying remove assignments of findcond
+  - Remove assignments on shared_secret (definition removed, all usages removed)
+  - Remove assignments on psk_id (definition removed, all usages removed)
+  - Remove assignments on IKM (definition removed, all usages removed)
+yields
+
+Game 4 is
+     Ostart() :=
+     k <-R kemkey_t;
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+ {11}  salt_3: cr_salt_t <- empty;
+       label_6: label_extract_t <- label_psk_id_hash;
+       labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+       psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+       salt_4: cr_salt_t <- empty;
+       label_7: label_extract_t <- label_info_hash;
+       labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+       info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+       key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+       label_8: label_extract_t <- label_secret;
+       labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, psk_1);
+       secrett: extract_t <- Extract_PRF(k, labeled_IKM);
+       label_9: label_expand_t <- label_key;
+       L_3: length_t <- Nk;
+       labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+       key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
+       label_10: label_expand_t <- label_nonce;
+       L_4: length_t <- Nn;
+       labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+       nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+       label_11: label_expand_t <- label_exp;
+       L_5: length_t <- Nh;
+       labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+       exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(secrett, labeledInfo_2));
+       return(concat(key, nonce, exporter_secret))
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying insert instruction find [unique] l_1 = l <= N suchthat
+      defined(else_br[l], mode_1[l], info_4[l], psk_1[l], pskID[l])
+      && (mode_1[l] = mode_1)
+      && (info_4[l] = info_4)
+      && (psk_1[l] = psk_1)
+      && (pskID[l] = pskID) then else else_br <- true at occurrence 11
+yields
+
+Game 5 is
+     Ostart() :=
+     k <-R kemkey_t;
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(else_br[l], mode_1[l], info_4[l], psk_1[l], pskID[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         label_8: label_extract_t <- label_secret;
+         labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, psk_1);
+         secrett: extract_t <- Extract_PRF(k, labeled_IKM);
+         label_9: label_expand_t <- label_key;
+         L_3: length_t <- Nk;
+         labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+         key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
+         label_10: label_expand_t <- label_nonce;
+         L_4: length_t <- Nn;
+         labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         label_11: label_expand_t <- label_exp;
+         L_5: length_t <- Nh;
+         labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+         exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(secrett, labeledInfo_2));
+         return(concat(key, nonce, exporter_secret))
+       else
+         else_br: bool <- true;
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         label_8: label_extract_t <- label_secret;
+         labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, psk_1);
+         secrett: extract_t <- Extract_PRF(k, labeled_IKM);
+         label_9: label_expand_t <- label_key;
+         L_3: length_t <- Nk;
+         labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+         key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
+         label_10: label_expand_t <- label_nonce;
+         L_4: length_t <- Nn;
+         labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         label_11: label_expand_t <- label_exp;
+         L_5: length_t <- Nh;
+         labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+         exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(secrett, labeledInfo_2));
+{324}    return(concat(key, nonce, exporter_secret))
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying insert instruction r_1 <- concat(key, nonce, exporter_secret) at occurrence 324
+yields
+
+Game 6 is
+     Ostart() :=
+     k <-R kemkey_t;
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(else_br[l], mode_1[l], info_4[l], psk_1[l], pskID[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         label_8: label_extract_t <- label_secret;
+         labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, psk_1);
+         secrett: extract_t <- Extract_PRF(k, labeled_IKM);
+         label_9: label_expand_t <- label_key;
+         L_3: length_t <- Nk;
+         labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+         key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
+         label_10: label_expand_t <- label_nonce;
+         L_4: length_t <- Nn;
+         labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         label_11: label_expand_t <- label_exp;
+         L_5: length_t <- Nh;
+         labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+         exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(secrett, labeledInfo_2));
+         return(concat(key, nonce, exporter_secret))
+       else
+         else_br: bool <- true;
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         label_8: label_extract_t <- label_secret;
+         labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, psk_1);
+         secrett: extract_t <- Extract_PRF(k, labeled_IKM);
+         label_9: label_expand_t <- label_key;
+         L_3: length_t <- Nk;
+         labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+         key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
+         label_10: label_expand_t <- label_nonce;
+         L_4: length_t <- Nn;
+         labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         label_11: label_expand_t <- label_exp;
+         L_5: length_t <- Nh;
+         labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+         exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(secrett, labeledInfo_2));
+         r_1: keys_t <- concat(key, nonce, exporter_secret);
+         return({334}concat(key, nonce, exporter_secret))
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying use variable(s) r_1
+  - Use variable r_1
+    - concat(key, nonce, exporter_secret) replaced with r_1 at 334
+yields
+
+Game 7 is
+     Ostart() :=
+     k <-R kemkey_t;
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(else_br[l], mode_1[l], info_4[l], psk_1[l], pskID[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         label_8: label_extract_t <- label_secret;
+         labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, psk_1);
+         secrett: extract_t <- Extract_PRF(k, labeled_IKM);
+         label_9: label_expand_t <- label_key;
+         L_3: length_t <- Nk;
+         labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+         key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
+         label_10: label_expand_t <- label_nonce;
+         L_4: length_t <- Nn;
+         labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         label_11: label_expand_t <- label_exp;
+         L_5: length_t <- Nh;
+         labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+         exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(secrett, labeledInfo_2));
+         return({166}concat(key, nonce, exporter_secret))
+       else
+         else_br: bool <- true;
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         label_8: label_extract_t <- label_secret;
+         labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, psk_1);
+         secrett: extract_t <- Extract_PRF(k, labeled_IKM);
+         label_9: label_expand_t <- label_key;
+         L_3: length_t <- Nk;
+         labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+         key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
+         label_10: label_expand_t <- label_nonce;
+         L_4: length_t <- Nn;
+         labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         label_11: label_expand_t <- label_exp;
+         L_5: length_t <- Nh;
+         labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+         exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(secrett, labeledInfo_2));
+         r_1: keys_t <- concat(key, nonce, exporter_secret);
+         return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying replace term at occurrence 166 with r_1[l_1]
+yields
+
+Game 8 is
+     Ostart() :=
+     k <-R kemkey_t;
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         label_8: label_extract_t <- label_secret;
+         labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, psk_1);
+         secrett: extract_t <- Extract_PRF(k, labeled_IKM);
+         label_9: label_expand_t <- label_key;
+         L_3: length_t <- Nk;
+         labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+         key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
+         label_10: label_expand_t <- label_nonce;
+         L_4: length_t <- Nn;
+         labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         label_11: label_expand_t <- label_exp;
+         L_5: length_t <- Nh;
+         labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+         exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(secrett, labeledInfo_2));
+         return(r_1[l_1])
+       else
+         else_br: bool <- true;
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         label_8: label_extract_t <- label_secret;
+         labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, psk_1);
+         secrett: extract_t <- Extract_PRF(k, labeled_IKM);
+         label_9: label_expand_t <- label_key;
+         L_3: length_t <- Nk;
+         labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+         key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
+         label_10: label_expand_t <- label_nonce;
+         L_4: length_t <- Nn;
+         labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         label_11: label_expand_t <- label_exp;
+         L_5: length_t <- Nh;
+         labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+         exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(secrett, labeledInfo_2));
+         r_1: keys_t <- concat(key, nonce, exporter_secret);
+         return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying remove assignments of findcond
+  - Remove assignments on else_br (definition removed, all usages removed)
+  - Remove assignments on key (definition removed, all usages removed)
+  - Remove assignments on nonce (definition removed, all usages removed)
+  - Remove assignments on exporter_secret (definition removed, all usages removed)
+  - Remove assignments on secrett (definition removed, all usages removed)
+  - Remove assignments on labeledInfo (definition removed, all usages removed)
+  - Remove assignments on labeledInfo_1 (definition removed, all usages removed)
+  - Remove assignments on labeledInfo_2 (definition removed, all usages removed)
+  - Remove assignments on key_schedule_context (definition removed, all usages removed)
+  - Remove assignments on labeled_IKM (definition removed, all usages removed)
+  - Remove assignments on label_9 (definition removed, all usages removed)
+  - Remove assignments on L_3 (definition removed, all usages removed)
+  - Remove assignments on label_10 (definition removed, all usages removed)
+  - Remove assignments on L_4 (definition removed, all usages removed)
+  - Remove assignments on label_11 (definition removed, all usages removed)
+  - Remove assignments on L_5 (definition removed, all usages removed)
+  - Remove assignments on psk_id_hash (definition removed, all usages removed)
+  - Remove assignments on info_hash (definition removed, all usages removed)
+  - Remove assignments on label_8 (definition removed, all usages removed)
+  - Remove assignments on salt_3 (definition removed, all usages removed)
+  - Remove assignments on labeled_input (definition removed, all usages removed)
+  - Remove assignments on salt_4 (definition removed, all usages removed)
+  - Remove assignments on labeled_input_1 (definition removed, all usages removed)
+  - Remove assignments on label_6 (definition removed, all usages removed)
+  - Remove assignments on label_7 (definition removed, all usages removed)
+yields
+
+Game 9 is
+     Ostart() :=
+     k <-R kemkey_t;
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         label_8: label_extract_t <- label_secret;
+         labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, psk_1);
+         secrett: extract_t <- Extract_PRF(k, labeled_IKM);
+         label_9: label_expand_t <- label_key;
+         L_3: length_t <- Nk;
+         labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+         key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
+         label_10: label_expand_t <- label_nonce;
+         L_4: length_t <- Nn;
+         labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         label_11: label_expand_t <- label_exp;
+         L_5: length_t <- Nh;
+         labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+         exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(secrett, labeledInfo_2));
+         r_1: keys_t <- concat(key, nonce, exporter_secret);
+         return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying equivalence prf(Extract_PRF) [probability P_PRF_Extract(time(context for game 9) + time, N, maxlength(game 9: labeled_IKM))]
+  - Equivalence prf(Extract_PRF) with variables: k -> k_2
+yields
+
+Game 10 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         label_8: label_extract_t <- label_secret;
+         labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, psk_1);
+         secrett: extract_t <- (x_O: bitstring <- labeled_IKM; find [unique] u = ri <= N suchthat defined(x_O[ri], r_2[ri]) && (x_O = x_O[ri]) then r_2[u] else r_2 <-R extract_t; r_2);
+         label_9: label_expand_t <- label_key;
+         L_3: length_t <- Nk;
+         labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+         key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
+         label_10: label_expand_t <- label_nonce;
+         L_4: length_t <- Nn;
+         labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+         nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+         label_11: label_expand_t <- label_exp;
+         L_5: length_t <- Nh;
+         labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+         exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(secrett, labeledInfo_2));
+         r_1: keys_t <- concat(key, nonce, exporter_secret);
+         return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying expand
+  - Expand if/find/let
+yields
+
+Game 11 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         label_8: label_extract_t <- label_secret;
+         labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, psk_1);
+         x_O: bitstring <- labeled_IKM;
+         find [unique] u = ri <= N suchthat defined(x_O[ri], r_2[ri]) && (x_O = x_O[ri]) then
+           secrett: extract_t <- r_2[u];
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
+           label_10: label_expand_t <- label_nonce;
+           L_4: length_t <- Nn;
+           labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+           nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+           label_11: label_expand_t <- label_exp;
+           L_5: length_t <- Nh;
+           labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+           exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(secrett, labeledInfo_2));
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+         else
+           r_2 <-R extract_t;
+           secrett: extract_t <- r_2;
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           key: key_t <- truncate_to_Nk(Expand_PRF(secrett, labeledInfo));
+           label_10: label_expand_t <- label_nonce;
+           L_4: length_t <- Nn;
+           labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+           nonce: nonce_t <- truncate_to_Nn(Expand_PRF(secrett, labeledInfo_1));
+           label_11: label_expand_t <- label_exp;
+           L_5: length_t <- Nh;
+           labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+           exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(secrett, labeledInfo_2));
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying remove assignments of findcond
+  - Remove assignments on x_O (definition removed, all usages removed)
+  - Remove assignments on secrett (definition removed, all usages removed)
+  - Remove assignments on secrett (definition removed, all usages removed)
+yields
+
+Game 12 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         label_8: label_extract_t <- label_secret;
+         labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, psk_1);
+{101}    find [unique] u = ri <= N suchthat defined(labeled_IKM[ri], labeled_IKM[ri], r_2[ri]) && {105}(labeled_IKM = labeled_IKM[ri]) then
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           key: key_t <- truncate_to_Nk(Expand_PRF(r_2[u], labeledInfo));
+           label_10: label_expand_t <- label_nonce;
+           L_4: length_t <- Nn;
+           labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+           nonce: nonce_t <- truncate_to_Nn(Expand_PRF(r_2[u], labeledInfo_1));
+           label_11: label_expand_t <- label_exp;
+           L_5: length_t <- Nh;
+           labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+           exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(r_2[u], labeledInfo_2));
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+         else
+           r_2 <-R extract_t;
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           key: key_t <- truncate_to_Nk(Expand_PRF(r_2, labeledInfo));
+           label_10: label_expand_t <- label_nonce;
+           L_4: length_t <- Nn;
+           labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+           nonce: nonce_t <- truncate_to_Nn(Expand_PRF(r_2, labeledInfo_1));
+           label_11: label_expand_t <- label_exp;
+           L_5: length_t <- Nh;
+           labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+           exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(r_2, labeledInfo_2));
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying simplify
+  - Simplification pass
+    - Replaced (labeled_IKM = labeled_IKM[ri]) with (psk_1 = psk_1[ri]) at 105
+    - Replaced defined condition labeled_IKM[ri], labeled_IKM[ri], r_2[ri] with r_2[ri], psk_1[ri] in find at 101
+yields
+
+Game 13 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         label_8: label_extract_t <- label_secret;
+         labeled_IKM: bitstring <- concat_PRF(RFCXXXX, suite_id, label_8, psk_1);
+         find [unique] u = ri <= N suchthat defined(r_2[ri], psk_1[ri]) && (psk_1 = psk_1[ri]) then
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           key: key_t <- truncate_to_Nk(Expand_PRF(r_2[u], labeledInfo));
+           label_10: label_expand_t <- label_nonce;
+           L_4: length_t <- Nn;
+           labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+           nonce: nonce_t <- truncate_to_Nn(Expand_PRF(r_2[u], labeledInfo_1));
+           label_11: label_expand_t <- label_exp;
+           L_5: length_t <- Nh;
+           labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+           exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(r_2[u], labeledInfo_2));
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+         else
+           r_2 <-R extract_t;
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           key: key_t <- truncate_to_Nk(Expand_PRF(r_2, labeledInfo));
+           label_10: label_expand_t <- label_nonce;
+           L_4: length_t <- Nn;
+           labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+           nonce: nonce_t <- truncate_to_Nn(Expand_PRF(r_2, labeledInfo_1));
+           label_11: label_expand_t <- label_exp;
+           L_5: length_t <- Nh;
+           labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+           exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(r_2, labeledInfo_2));
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying move all binders
+  - Move assignment to labeled_IKM
+  - Move assignment to label_8
+yields
+
+Game 14 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         find [unique] u = ri <= N suchthat defined(r_2[ri], psk_1[ri]) && (psk_1 = psk_1[ri]) then
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           key: key_t <- truncate_to_Nk(Expand_PRF(r_2[u], labeledInfo));
+           label_10: label_expand_t <- label_nonce;
+           L_4: length_t <- Nn;
+           labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+           nonce: nonce_t <- truncate_to_Nn(Expand_PRF(r_2[u], labeledInfo_1));
+           label_11: label_expand_t <- label_exp;
+           L_5: length_t <- Nh;
+           labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+           exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(r_2[u], labeledInfo_2));
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+         else
+           r_2 <-R extract_t;
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           key: key_t <- truncate_to_Nk(Expand_PRF(r_2, labeledInfo));
+           label_10: label_expand_t <- label_nonce;
+           L_4: length_t <- Nn;
+           labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+           nonce: nonce_t <- truncate_to_Nn(Expand_PRF(r_2, labeledInfo_1));
+           label_11: label_expand_t <- label_exp;
+           L_5: length_t <- Nh;
+           labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+           exporter_secret: extract_t <- truncate_to_Nh(Expand_PRF(r_2, labeledInfo_2));
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying equivalence prf(Expand_PRF) [probability N * P_PRF_Expand(time(context for game 14) + time + (-1 + N) * max((3 * N + 3) * time(Expand_PRF, max(maxlength(game 14: labeledInfo_2), maxlength(game 14: labeledInfo_1), maxlength(game 14: labeledInfo))), (9 + 18 * N + 9 * N * N) * time(= bitstring, max(maxlength(game 15: x_O_6), maxlength(game 15: x_O_5), maxlength(game 15: x_O_4), maxlength(game 15: x_O_3), maxlength(game 15: x_O_2), maxlength(game 15: x_O_1)), max(maxlength(game 15: x_O_6), maxlength(game 15: x_O_5), maxlength(game 15: x_O_4), maxlength(game 15: x_O_3), maxlength(game 15: x_O_2), maxlength(game 15: x_O_1)))), 3 + 3 * N, max(maxlength(game 14: labeledInfo_2), maxlength(game 14: labeledInfo_1), maxlength(game 14: labeledInfo)))]
+  - Equivalence prf(Expand_PRF) with variables: r_2 -> k_2
+yields
+
+Game 15 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         find [unique] u = ri <= N suchthat defined(r_2[ri], psk_1[ri]) && (psk_1 = psk_1[ri]) then
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           key: key_t <- truncate_to_Nk((x_O_4: bitstring <- labeledInfo; {118}find [unique]  suchthat defined(x_O_1[u], r_3[u]) && (x_O_4 = x_O_1[u]) then r_3[u] orfind  suchthat defined(x_O_2[u], r_4[u]) && {136}(x_O_4 = x_O_2[u]) then r_4[u] orfind  suchthat defined(x_O_3[u], r_5[u]) && {149}(x_O_4 = x_O_3[u]) then r_5[u] orfind u_18 = ri_33 <= N suchthat defined(u, u[ri_33], x_O_4[ri_33], r_6[ri_33]) && (u[ri_33] = u) && (x_O_4 = x_O_4[ri_33]) then r_6[u_18] orfind u_17 = ri_32 <= N suchthat defined(u, u[ri_32], x_O_5[ri_32], r_7[ri_32]) && {180}((u[ri_32] = u) && (x_O_4 = x_O_5[ri_32])) then r_7[u_17] orfind u_16 = ri_31 <= N suchthat defined(u, u[ri_31], x_O_6[ri_31], r_8[ri_31]) && {198}((u[ri_31] = u) && (x_O_4 = x_O_6[ri_31])) then r_8[u_16] else r_6 <-R expand_t; r_6));
+           label_10: label_expand_t <- label_nonce;
+           L_4: length_t <- Nn;
+           labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+           nonce: nonce_t <- truncate_to_Nn((x_O_5: bitstring <- labeledInfo_1; {234}find [unique]  suchthat defined(x_O_1[u], r_3[u]) && {239}(x_O_5 = x_O_1[u]) then r_3[u] orfind  suchthat defined(x_O_2[u], r_4[u]) && (x_O_5 = x_O_2[u]) then r_4[u] orfind  suchthat defined(x_O_3[u], r_5[u]) && {265}(x_O_5 = x_O_3[u]) then r_5[u] orfind u_15 = ri_27 <= N suchthat defined(u, u[ri_27], x_O_4[ri_27], r_6[ri_27]) && {278}((u[ri_27] = u) && (x_O_5 = x_O_4[ri_27])) then r_6[u_15] orfind u_14 = ri_26 <= N suchthat defined(u, u[ri_26], x_O_5[ri_26], r_7[ri_26]) && (u[ri_26] = u) && (x_O_5 = x_O_5[ri_26]) then r_7[u_14] orfind u_13 = ri_25 <= N suchthat defined(u, u[ri_25], x_O_6[ri_25], r_8[ri_25]) && {314}((u[ri_25] = u) && (x_O_5 = x_O_6[ri_25])) then r_8[u_13] else r_7 <-R expand_t; r_7));
+           label_11: label_expand_t <- label_exp;
+           L_5: length_t <- Nh;
+           labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+           exporter_secret: extract_t <- truncate_to_Nh((x_O_6: bitstring <- labeledInfo_2; {350}find [unique]  suchthat defined(x_O_1[u], r_3[u]) && {355}(x_O_6 = x_O_1[u]) then r_3[u] orfind  suchthat defined(x_O_2[u], r_4[u]) && {368}(x_O_6 = x_O_2[u]) then r_4[u] orfind  suchthat defined(x_O_3[u], r_5[u]) && (x_O_6 = x_O_3[u]) then r_5[u] orfind u_12 = ri_21 <= N suchthat defined(u, u[ri_21], x_O_4[ri_21], r_6[ri_21]) && {394}((u[ri_21] = u) && (x_O_6 = x_O_4[ri_21])) then r_6[u_12] orfind u_11 = ri_20 <= N suchthat defined(u, u[ri_20], x_O_5[ri_20], r_7[ri_20]) && {412}((u[ri_20] = u) && (x_O_6 = x_O_5[ri_20])) then r_7[u_11] orfind u_10 = ri_19 <= N suchthat defined(u, u[ri_19], x_O_6[ri_19], r_8[ri_19]) && (u[ri_19] = u) && (x_O_6 = x_O_6[ri_19]) then r_8[u_10] else r_8 <-R expand_t; r_8));
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+         else
+           r_2: extract_t <- cst_extract_t;
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           key: key_t <- truncate_to_Nk((x_O_1: bitstring <- labeledInfo; {494}find [unique]  suchthat defined(x_O_1, r_3) && {497}(x_O_1 = x_O_1) then r_3 orfind  suchthat defined(x_O_2, r_4) && {506}(x_O_1 = x_O_2) then r_4 orfind  suchthat defined(x_O_3, r_5) && {515}(x_O_1 = x_O_3) then r_5 orfind u_9 = ri_15 <= N suchthat defined(u[ri_15], x_O_4[ri_15], r_6[ri_15]) && {525}((u[ri_15] = i) && (x_O_1 = x_O_4[ri_15])) then r_6[u_9] orfind u_8 = ri_14 <= N suchthat defined(u[ri_14], x_O_5[ri_14], r_7[ri_14]) && {541}((u[ri_14] = i) && (x_O_1 = x_O_5[ri_14])) then r_7[u_8] orfind u_7 = ri_13 <= N suchthat defined(u[ri_13], x_O_6[ri_13], r_8[ri_13]) && {557}((u[ri_13] = i) && (x_O_1 = x_O_6[ri_13])) then r_8[u_7] else r_3 <-R expand_t; r_3));
+           label_10: label_expand_t <- label_nonce;
+           L_4: length_t <- Nn;
+           labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+           nonce: nonce_t <- truncate_to_Nn((x_O_2: bitstring <- labeledInfo_1; {592}find [unique]  suchthat defined(x_O_1, r_3) && {595}(x_O_2 = x_O_1) then r_3 orfind  suchthat defined(x_O_2, r_4) && {604}(x_O_2 = x_O_2) then r_4 orfind  suchthat defined(x_O_3, r_5) && {613}(x_O_2 = x_O_3) then r_5 orfind u_6 = ri_9 <= N suchthat defined(u[ri_9], x_O_4[ri_9], r_6[ri_9]) && {623}((u[ri_9] = i) && (x_O_2 = x_O_4[ri_9])) then r_6[u_6] orfind u_5 = ri_8 <= N suchthat defined(u[ri_8], x_O_5[ri_8], r_7[ri_8]) && {639}((u[ri_8] = i) && (x_O_2 = x_O_5[ri_8])) then r_7[u_5] orfind u_4 = ri_7 <= N suchthat defined(u[ri_7], x_O_6[ri_7], r_8[ri_7]) && {655}((u[ri_7] = i) && (x_O_2 = x_O_6[ri_7])) then r_8[u_4] else r_4 <-R expand_t; r_4));
+           label_11: label_expand_t <- label_exp;
+           L_5: length_t <- Nh;
+           labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+           exporter_secret: extract_t <- truncate_to_Nh((x_O_3: bitstring <- labeledInfo_2; {690}find [unique]  suchthat defined(x_O_1, r_3) && {693}(x_O_3 = x_O_1) then r_3 orfind  suchthat defined(x_O_2, r_4) && {702}(x_O_3 = x_O_2) then r_4 orfind  suchthat defined(x_O_3, r_5) && {711}(x_O_3 = x_O_3) then r_5 orfind u_3 = ri_3 <= N suchthat defined(u[ri_3], x_O_4[ri_3], r_6[ri_3]) && {721}((u[ri_3] = i) && (x_O_3 = x_O_4[ri_3])) then r_6[u_3] orfind u_2 = ri_2 <= N suchthat defined(u[ri_2], x_O_5[ri_2], r_7[ri_2]) && {737}((u[ri_2] = i) && (x_O_3 = x_O_5[ri_2])) then r_7[u_2] orfind u_1 = ri_1 <= N suchthat defined(u[ri_1], x_O_6[ri_1], r_8[ri_1]) && {753}((u[ri_1] = i) && (x_O_3 = x_O_6[ri_1])) then r_8[u_1] else r_5 <-R expand_t; r_5));
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying simplify (non-expanded game) [probability P_hashcoll(time + time(context for game 15))]
+  - Simplification pass
+    - Replaced ((u[ri_31] = u) && (x_O_4 = x_O_6[ri_31])) with false at 198
+    - Remove branch 6 in find at 118
+    - Replaced ((u[ri_32] = u) && (x_O_4 = x_O_5[ri_32])) with false at 180
+    - Remove branch 5 in find at 118
+    - Replaced (x_O_4 = x_O_3[u]) with false at 149
+    - Remove branch 3 in find at 118
+    - Replaced (x_O_4 = x_O_2[u]) with false at 136
+    - Remove branch 2 in find at 118
+    - Replaced ((u[ri_25] = u) && (x_O_5 = x_O_6[ri_25])) with false at 314
+    - Remove branch 6 in find at 234
+    - Replaced ((u[ri_27] = u) && (x_O_5 = x_O_4[ri_27])) with false at 278
+    - Remove branch 4 in find at 234
+    - Replaced (x_O_5 = x_O_3[u]) with false at 265
+    - Remove branch 3 in find at 234
+    - Replaced (x_O_5 = x_O_1[u]) with false at 239
+    - Remove branch 1 in find at 234
+    - Replaced ((u[ri_20] = u) && (x_O_6 = x_O_5[ri_20])) with false at 412
+    - Remove branch 5 in find at 350
+    - Replaced ((u[ri_21] = u) && (x_O_6 = x_O_4[ri_21])) with false at 394
+    - Remove branch 4 in find at 350
+    - Replaced (x_O_6 = x_O_2[u]) with false at 368
+    - Remove branch 2 in find at 350
+    - Replaced (x_O_6 = x_O_1[u]) with false at 355
+    - Remove branch 1 in find at 350
+    - Replaced ((u[ri_13] = i) && (x_O_1 = x_O_6[ri_13])) with false at 557
+    - Remove branch 6 in find at 494
+    - Replaced ((u[ri_14] = i) && (x_O_1 = x_O_5[ri_14])) with false at 541
+    - Remove branch 5 in find at 494
+    - Replaced ((u[ri_15] = i) && (x_O_1 = x_O_4[ri_15])) with false at 525
+    - Remove branch 4 in find at 494
+    - Replaced (x_O_1 = x_O_3) with false at 515
+    - Remove branch 3 in find at 494
+    - Replaced (x_O_1 = x_O_2) with false at 506
+    - Remove branch 2 in find at 494
+    - Replaced (x_O_1 = x_O_1) with true at 497
+    - Replaced ((u[ri_7] = i) && (x_O_2 = x_O_6[ri_7])) with false at 655
+    - Remove branch 6 in find at 592
+    - Replaced ((u[ri_8] = i) && (x_O_2 = x_O_5[ri_8])) with false at 639
+    - Remove branch 5 in find at 592
+    - Replaced ((u[ri_9] = i) && (x_O_2 = x_O_4[ri_9])) with false at 623
+    - Remove branch 4 in find at 592
+    - Replaced (x_O_2 = x_O_3) with false at 613
+    - Remove branch 3 in find at 592
+    - Replaced (x_O_2 = x_O_2) with true at 604
+    - Replaced (x_O_2 = x_O_1) with false at 595
+    - Remove branch 1 in find at 592
+    - Replaced ((u[ri_1] = i) && (x_O_3 = x_O_6[ri_1])) with false at 753
+    - Remove branch 6 in find at 690
+    - Replaced ((u[ri_2] = i) && (x_O_3 = x_O_5[ri_2])) with false at 737
+    - Remove branch 5 in find at 690
+    - Replaced ((u[ri_3] = i) && (x_O_3 = x_O_4[ri_3])) with false at 721
+    - Remove branch 4 in find at 690
+    - Replaced (x_O_3 = x_O_3) with true at 711
+    - Replaced (x_O_3 = x_O_2) with false at 702
+    - Remove branch 2 in find at 690
+    - Replaced (x_O_3 = x_O_1) with false at 693
+    - Remove branch 1 in find at 690
+yields
+
+Game 16 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         find [unique] u = ri <= N suchthat defined(r_2[ri], psk_1[ri]) && (psk_1 = psk_1[ri]) then
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           key: key_t <- truncate_to_Nk((x_O_4: bitstring <- labeledInfo; {118}find [unique]  suchthat defined(x_O_1[u], r_3[u]) && (x_O_4 = x_O_1[u]) then r_3[u] orfind u_18 = ri_33 <= N suchthat defined(u, u[ri_33], x_O_4[ri_33], r_6[ri_33]) && (u[ri_33] = u) && (x_O_4 = x_O_4[ri_33]) then r_6[u_18] else r_6 <-R expand_t; r_6));
+           label_10: label_expand_t <- label_nonce;
+           L_4: length_t <- Nn;
+           labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+           nonce: nonce_t <- truncate_to_Nn((x_O_5: bitstring <- labeledInfo_1; {172}find [unique]  suchthat defined(x_O_2[u], r_4[u]) && (x_O_5 = x_O_2[u]) then r_4[u] orfind u_14 = ri_26 <= N suchthat defined(u, u[ri_26], x_O_5[ri_26], r_7[ri_26]) && (u[ri_26] = u) && (x_O_5 = x_O_5[ri_26]) then r_7[u_14] else r_7 <-R expand_t; r_7));
+           label_11: label_expand_t <- label_exp;
+           L_5: length_t <- Nh;
+           labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+           exporter_secret: extract_t <- truncate_to_Nh((x_O_6: bitstring <- labeledInfo_2; {226}find [unique]  suchthat defined(x_O_3[u], r_5[u]) && (x_O_6 = x_O_3[u]) then r_5[u] orfind u_10 = ri_19 <= N suchthat defined(u, u[ri_19], x_O_6[ri_19], r_8[ri_19]) && (u[ri_19] = u) && (x_O_6 = x_O_6[ri_19]) then r_8[u_10] else r_8 <-R expand_t; r_8));
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+         else
+           r_2: extract_t <- cst_extract_t;
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           key: key_t <- truncate_to_Nk((x_O_1: bitstring <- labeledInfo; {308}if defined(x_O_1, r_3) then r_3 else r_3 <-R expand_t; r_3));
+           label_10: label_expand_t <- label_nonce;
+           L_4: length_t <- Nn;
+           labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+           nonce: nonce_t <- truncate_to_Nn((x_O_2: bitstring <- labeledInfo_1; {336}if defined(x_O_2, r_4) then r_4 else r_4 <-R expand_t; r_4));
+           label_11: label_expand_t <- label_exp;
+           L_5: length_t <- Nh;
+           labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+           exporter_secret: extract_t <- truncate_to_Nh((x_O_3: bitstring <- labeledInfo_2; {364}if defined(x_O_3, r_5) then r_5 else r_5 <-R expand_t; r_5));
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying expand [probability P_hashcoll(time + time(context for game 16))]
+  - Expand if/find/let
+    - Remove branch 1 in find at 364
+    - Find at 364 removed (else branch kept if any)
+    - Remove branch 1 in find at 336
+    - Find at 336 removed (else branch kept if any)
+    - Remove branch 1 in find at 308
+    - Find at 308 removed (else branch kept if any)
+    - Replaced defined condition u, u[ri_19], x_O_6[ri_19], r_8[ri_19] with u[ri_19], x_O_6[ri_19], r_8[ri_19] in find at 226
+    - Remove branch 1 in find at 226
+    - Replaced defined condition u, u[ri_19], x_O_6[ri_19], r_8[ri_19] with u[ri_19], x_O_6[ri_19], r_8[ri_19] in find at 226
+    - Remove branch 1 in find at 226
+    - Replaced defined condition u, u[ri_26], x_O_5[ri_26], r_7[ri_26] with u[ri_26], x_O_5[ri_26], r_7[ri_26] in find at 172
+    - Remove branch 1 in find at 172
+    - Replaced defined condition u, u[ri_19], x_O_6[ri_19], r_8[ri_19] with u[ri_19], x_O_6[ri_19], r_8[ri_19] in find at 226
+    - Remove branch 1 in find at 226
+    - Replaced defined condition u, u[ri_19], x_O_6[ri_19], r_8[ri_19] with u[ri_19], x_O_6[ri_19], r_8[ri_19] in find at 226
+    - Remove branch 1 in find at 226
+    - Replaced defined condition u, u[ri_26], x_O_5[ri_26], r_7[ri_26] with u[ri_26], x_O_5[ri_26], r_7[ri_26] in find at 172
+    - Remove branch 1 in find at 172
+    - Replaced defined condition u, u[ri_33], x_O_4[ri_33], r_6[ri_33] with u[ri_33], x_O_4[ri_33], r_6[ri_33] in find at 118
+    - Remove branch 1 in find at 118
+yields
+
+Game 17 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         find [unique] u = ri <= N suchthat defined(r_2[ri], psk_1[ri]) && (psk_1 = psk_1[ri]) then
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           x_O_4: bitstring <- labeledInfo;
+           find [unique] u_18 = ri_33 <= N suchthat defined(u[ri_33], x_O_4[ri_33], r_6[ri_33]) && (u[ri_33] = u) && (x_O_4 = x_O_4[ri_33]) then
+             key: key_t <- truncate_to_Nk(r_6[u_18]);
+             label_10: label_expand_t <- label_nonce;
+             L_4: length_t <- Nn;
+             labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+             x_O_5: bitstring <- labeledInfo_1;
+             find [unique] u_14 = ri_26 <= N suchthat defined(u[ri_26], x_O_5[ri_26], r_7[ri_26]) && (u[ri_26] = u) && (x_O_5 = x_O_5[ri_26]) then
+               nonce: nonce_t <- truncate_to_Nn(r_7[u_14]);
+               label_11: label_expand_t <- label_exp;
+               L_5: length_t <- Nh;
+               labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+               x_O_6: bitstring <- labeledInfo_2;
+               find [unique] u_10 = ri_19 <= N suchthat defined(u[ri_19], x_O_6[ri_19], r_8[ri_19]) && (u[ri_19] = u) && (x_O_6 = x_O_6[ri_19]) then
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8[u_10]);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+               else
+                 r_8 <-R expand_t;
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+             else
+               r_7 <-R expand_t;
+               nonce: nonce_t <- truncate_to_Nn(r_7);
+               label_11: label_expand_t <- label_exp;
+               L_5: length_t <- Nh;
+               labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+               x_O_6: bitstring <- labeledInfo_2;
+               find [unique] u_10 = ri_19 <= N suchthat defined(u[ri_19], x_O_6[ri_19], r_8[ri_19]) && (u[ri_19] = u) && (x_O_6 = x_O_6[ri_19]) then
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8[u_10]);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+               else
+                 r_8 <-R expand_t;
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+           else
+             r_6 <-R expand_t;
+             key: key_t <- truncate_to_Nk(r_6);
+             label_10: label_expand_t <- label_nonce;
+             L_4: length_t <- Nn;
+             labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+             x_O_5: bitstring <- labeledInfo_1;
+             find [unique] u_14 = ri_26 <= N suchthat defined(u[ri_26], x_O_5[ri_26], r_7[ri_26]) && (u[ri_26] = u) && (x_O_5 = x_O_5[ri_26]) then
+               nonce: nonce_t <- truncate_to_Nn(r_7[u_14]);
+               label_11: label_expand_t <- label_exp;
+               L_5: length_t <- Nh;
+               labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+               x_O_6: bitstring <- labeledInfo_2;
+               find [unique] u_10 = ri_19 <= N suchthat defined(u[ri_19], x_O_6[ri_19], r_8[ri_19]) && (u[ri_19] = u) && (x_O_6 = x_O_6[ri_19]) then
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8[u_10]);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+               else
+                 r_8 <-R expand_t;
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+             else
+               r_7 <-R expand_t;
+               nonce: nonce_t <- truncate_to_Nn(r_7);
+               label_11: label_expand_t <- label_exp;
+               L_5: length_t <- Nh;
+               labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+               x_O_6: bitstring <- labeledInfo_2;
+               find [unique] u_10 = ri_19 <= N suchthat defined(u[ri_19], x_O_6[ri_19], r_8[ri_19]) && (u[ri_19] = u) && (x_O_6 = x_O_6[ri_19]) then
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8[u_10]);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+               else
+                 r_8 <-R expand_t;
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+         else
+           r_2: extract_t <- cst_extract_t;
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           x_O_1: bitstring <- labeledInfo;
+           r_3 <-R expand_t;
+           key: key_t <- truncate_to_Nk(r_3);
+           label_10: label_expand_t <- label_nonce;
+           L_4: length_t <- Nn;
+           labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+           x_O_2: bitstring <- labeledInfo_1;
+           r_4 <-R expand_t;
+           nonce: nonce_t <- truncate_to_Nn(r_4);
+           label_11: label_expand_t <- label_exp;
+           L_5: length_t <- Nh;
+           labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+           x_O_3: bitstring <- labeledInfo_2;
+           r_5 <-R expand_t;
+           exporter_secret: extract_t <- truncate_to_Nh(r_5);
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying remove assignments of findcond
+  - Remove assignments on r_2 (definition removed, all usages removed)
+  - Remove assignments on x_O_1 (definition removed, all usages removed)
+  - Remove assignments on x_O_2 (definition removed, all usages removed)
+  - Remove assignments on x_O_3 (definition removed, all usages removed)
+  - Remove assignments on x_O_4 (definition point kept, all usages removed)
+  - Remove assignments on x_O_6 (definition kept, array references kept)
+  - Remove assignments on x_O_6 (definition kept, array references kept)
+  - Remove assignments on x_O_5 (definition kept, array references kept)
+  - Remove assignments on x_O_6 (definition kept, array references kept)
+  - Remove assignments on x_O_6 (definition kept, array references kept)
+  - Remove assignments on x_O_5 (definition kept, array references kept)
+  - Remove assignments on labeledInfo_1 (definition removed, all usages removed)
+  - Remove assignments on labeledInfo_2 (definition removed, all usages removed)
+  - Remove assignments on label_10 (definition removed, all usages removed)
+  - Remove assignments on L_4 (definition removed, all usages removed)
+  - Remove assignments on label_11 (definition removed, all usages removed)
+  - Remove assignments on L_5 (definition removed, all usages removed)
+yields
+
+Game 18 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         find [unique] u = ri <= N suchthat defined(r_3[ri], psk_1[ri]) && (psk_1 = psk_1[ri]) then
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           x_O_4: bitstring <- cst_bitstring;
+{115}      find [unique] u_18 = ri_33 <= N suchthat defined(labeledInfo[ri_33], x_O_4[ri_33], u[ri_33], r_6[ri_33]) && {120}((u[ri_33] = u) && (labeledInfo = labeledInfo[ri_33])) then
+             key: key_t <- truncate_to_Nk(r_6[u_18]);
+             label_10: label_expand_t <- label_nonce;
+             L_4: length_t <- Nn;
+             labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+             x_O_5: bitstring <- labeledInfo_1;
+             find [unique] u_14 = ri_26 <= N suchthat defined(u[ri_26], x_O_5[ri_26], r_7[ri_26]) && (u[ri_26] = u) && (labeledInfo_1 = x_O_5[ri_26]) then
+               nonce: nonce_t <- truncate_to_Nn(r_7[u_14]);
+               label_11: label_expand_t <- label_exp;
+               L_5: length_t <- Nh;
+               labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+               x_O_6: bitstring <- labeledInfo_2;
+               find [unique] u_10 = ri_19 <= N suchthat defined(u[ri_19], x_O_6[ri_19], r_8[ri_19]) && (u[ri_19] = u) && (labeledInfo_2 = x_O_6[ri_19]) then
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8[u_10]);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+               else
+                 r_8 <-R expand_t;
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+             else
+               r_7 <-R expand_t;
+               nonce: nonce_t <- truncate_to_Nn(r_7);
+               label_11: label_expand_t <- label_exp;
+               L_5: length_t <- Nh;
+               labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+               x_O_6: bitstring <- labeledInfo_2;
+               find [unique] u_10 = ri_19 <= N suchthat defined(u[ri_19], x_O_6[ri_19], r_8[ri_19]) && (u[ri_19] = u) && (labeledInfo_2 = x_O_6[ri_19]) then
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8[u_10]);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+               else
+                 r_8 <-R expand_t;
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+           else
+             r_6 <-R expand_t;
+             key: key_t <- truncate_to_Nk(r_6);
+             label_10: label_expand_t <- label_nonce;
+             L_4: length_t <- Nn;
+             labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+             x_O_5: bitstring <- labeledInfo_1;
+{359}        find [unique] u_14 = ri_26 <= N suchthat defined(u[ri_26], x_O_5[ri_26], r_7[ri_26]) && {363}((u[ri_26] = u) && (labeledInfo_1 = x_O_5[ri_26])) then
+               nonce: nonce_t <- truncate_to_Nn(r_7[u_14]);
+               label_11: label_expand_t <- label_exp;
+               L_5: length_t <- Nh;
+               labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+               x_O_6: bitstring <- labeledInfo_2;
+               find [unique] u_10 = ri_19 <= N suchthat defined(u[ri_19], x_O_6[ri_19], r_8[ri_19]) && (u[ri_19] = u) && (labeledInfo_2 = x_O_6[ri_19]) then
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8[u_10]);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+               else
+                 r_8 <-R expand_t;
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+             else
+               r_7 <-R expand_t;
+               nonce: nonce_t <- truncate_to_Nn(r_7);
+               label_11: label_expand_t <- label_exp;
+               L_5: length_t <- Nh;
+               labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+               x_O_6: bitstring <- labeledInfo_2;
+{478}          find [unique] u_10 = ri_19 <= N suchthat defined(u[ri_19], x_O_6[ri_19], r_8[ri_19]) && {482}((u[ri_19] = u) && (labeledInfo_2 = x_O_6[ri_19])) then
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8[u_10]);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+               else
+                 r_8 <-R expand_t;
+                 exporter_secret: extract_t <- truncate_to_Nh(r_8);
+                 r_1: keys_t <- concat(key, nonce, exporter_secret);
+                 return(r_1)
+         else
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           r_3 <-R expand_t;
+           key: key_t <- truncate_to_Nk(r_3);
+           r_4 <-R expand_t;
+           nonce: nonce_t <- truncate_to_Nn(r_4);
+           r_5 <-R expand_t;
+           exporter_secret: extract_t <- truncate_to_Nh(r_5);
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying simplify [probability P_hashcoll(time + time(context for game 18))]
+  - Simplification pass
+    - Replaced ((u[ri_19] = u) && (labeledInfo_2 = x_O_6[ri_19])) with ((u[ri_19] = u) && (labeled_input_1 = labeled_input_1[ri_19]) && (labeled_input = labeled_input[ri_19]) && (mode_1 = mode_1[ri_19])) at 482
+    - Remove branch 1 in find at 478
+    - Find at 478 removed (else branch kept if any)
+    - Replaced ((u[ri_26] = u) && (labeledInfo_1 = x_O_5[ri_26])) with ((u[ri_26] = u) && (labeled_input_1 = labeled_input_1[ri_26]) && (labeled_input = labeled_input[ri_26]) && (mode_1 = mode_1[ri_26])) at 363
+    - Remove branch 1 in find at 359
+    - Find at 359 removed (else branch kept if any)
+    - Replaced ((u[ri_33] = u) && (labeledInfo = labeledInfo[ri_33])) with ((u[ri_33] = u) && (labeled_input_1 = labeled_input_1[ri_33]) && (labeled_input = labeled_input[ri_33]) && (mode_1 = mode_1[ri_33])) at 120
+    - Remove branch 1 in find at 115
+    - Find at 115 removed (else branch kept if any)
+yields
+
+Game 19 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         salt_3: cr_salt_t <- empty;
+         label_6: label_extract_t <- label_psk_id_hash;
+         labeled_input: bitstring <- concat_CR(RFCXXXX, suite_id, label_6, pskID);
+         psk_id_hash: cr_output_t <- Extract_CR(cr_key_2, salt_3, labeled_input);
+         salt_4: cr_salt_t <- empty;
+         label_7: label_extract_t <- label_info_hash;
+         labeled_input_1: bitstring <- concat_CR(RFCXXXX, suite_id, label_7, info_4);
+         info_hash: cr_output_t <- Extract_CR(cr_key_2, salt_4, labeled_input_1);
+         key_schedule_context: bitstring <- concat_KeySched(mode_1, psk_id_hash, info_hash);
+         find [unique] u = ri <= N suchthat defined(r_3[ri], psk_1[ri]) && (psk_1 = psk_1[ri]) then
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           x_O_4: bitstring <- cst_bitstring;
+           r_6 <-R expand_t;
+           key: key_t <- truncate_to_Nk(r_6);
+           label_10: label_expand_t <- label_nonce;
+           L_4: length_t <- Nn;
+           labeledInfo_1: bitstring <- concat_Expand(L_4, RFCXXXX, suite_id, label_10, key_schedule_context);
+           x_O_5: bitstring <- labeledInfo_1;
+           r_7 <-R expand_t;
+           nonce: nonce_t <- truncate_to_Nn(r_7);
+           label_11: label_expand_t <- label_exp;
+           L_5: length_t <- Nh;
+           labeledInfo_2: bitstring <- concat_Expand(L_5, RFCXXXX, suite_id, label_11, key_schedule_context);
+           x_O_6: bitstring <- labeledInfo_2;
+           r_8 <-R expand_t;
+           exporter_secret: extract_t <- truncate_to_Nh(r_8);
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+         else
+           label_9: label_expand_t <- label_key;
+           L_3: length_t <- Nk;
+           labeledInfo: bitstring <- concat_Expand(L_3, RFCXXXX, suite_id, label_9, key_schedule_context);
+           r_3 <-R expand_t;
+           key: key_t <- truncate_to_Nk(r_3);
+           r_4 <-R expand_t;
+           nonce: nonce_t <- truncate_to_Nn(r_4);
+           r_5 <-R expand_t;
+           exporter_secret: extract_t <- truncate_to_Nh(r_5);
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying remove assignments of findcond
+  - Remove assignments on labeledInfo (definition removed, all usages removed)
+  - Remove assignments on labeledInfo (definition removed, all usages removed)
+  - Remove assignments on x_O_4 (definition removed, all usages removed)
+  - Remove assignments on x_O_5 (definition removed, all usages removed)
+  - Remove assignments on x_O_6 (definition removed, all usages removed)
+  - Remove assignments on label_9 (definition removed, all usages removed)
+  - Remove assignments on L_3 (definition removed, all usages removed)
+  - Remove assignments on label_9 (definition removed, all usages removed)
+  - Remove assignments on L_3 (definition removed, all usages removed)
+  - Remove assignments on labeledInfo_1 (definition removed, all usages removed)
+  - Remove assignments on labeledInfo_2 (definition removed, all usages removed)
+  - Remove assignments on key_schedule_context (definition removed, all usages removed)
+  - Remove assignments on label_10 (definition removed, all usages removed)
+  - Remove assignments on L_4 (definition removed, all usages removed)
+  - Remove assignments on label_11 (definition removed, all usages removed)
+  - Remove assignments on L_5 (definition removed, all usages removed)
+  - Remove assignments on psk_id_hash (definition removed, all usages removed)
+  - Remove assignments on info_hash (definition removed, all usages removed)
+  - Remove assignments on salt_3 (definition removed, all usages removed)
+  - Remove assignments on labeled_input (definition removed, all usages removed)
+  - Remove assignments on salt_4 (definition removed, all usages removed)
+  - Remove assignments on labeled_input_1 (definition removed, all usages removed)
+  - Remove assignments on label_6 (definition removed, all usages removed)
+  - Remove assignments on label_7 (definition removed, all usages removed)
+yields
+
+Game 20 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+ {45}    find [unique] u = ri <= N suchthat defined(r_3[ri], psk_1[ri]) && (psk_1 = psk_1[ri]) then
+           r_6 <-R expand_t;
+           key: key_t <- truncate_to_Nk(r_6);
+           r_7 <-R expand_t;
+           nonce: nonce_t <- truncate_to_Nn(r_7);
+           r_8 <-R expand_t;
+           exporter_secret: extract_t <- truncate_to_Nh(r_8);
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+         else
+           r_3 <-R expand_t;
+           key: key_t <- truncate_to_Nk(r_3);
+           r_4 <-R expand_t;
+           nonce: nonce_t <- truncate_to_Nn(r_4);
+           r_5 <-R expand_t;
+           exporter_secret: extract_t <- truncate_to_Nh(r_5);
+           r_1: keys_t <- concat(key, nonce, exporter_secret);
+           return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying merge branches
+  - Merge all branches of find at 45
+yields
+
+Game 21 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         r_3 <-R expand_t;
+         key: key_t <- truncate_to_Nk(r_3);
+         r_4 <-R expand_t;
+         nonce: nonce_t <- truncate_to_Nn(r_4);
+         r_5 <-R expand_t;
+         exporter_secret: extract_t <- truncate_to_Nh(r_5);
+         r_1: keys_t <- concat(key, nonce, exporter_secret);
+         return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying equivalence truncate(truncate_to_Nk)
+  - Equivalence truncate(truncate_to_Nk) with variables: r_3 -> h
+yields
+
+Game 22 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         k_1 <-R key_t;
+         key: key_t <- k_1;
+         r_4 <-R expand_t;
+         nonce: nonce_t <- truncate_to_Nn(r_4);
+         r_5 <-R expand_t;
+         exporter_secret: extract_t <- truncate_to_Nh(r_5);
+         r_1: keys_t <- concat(key, nonce, exporter_secret);
+         return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying remove assignments of findcond
+  - Remove assignments on key (definition removed, all usages removed)
+yields
+
+Game 23 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         k_1 <-R key_t;
+         r_4 <-R expand_t;
+         nonce: nonce_t <- truncate_to_Nn(r_4);
+         r_5 <-R expand_t;
+         exporter_secret: extract_t <- truncate_to_Nh(r_5);
+         r_1: keys_t <- concat(k_1, nonce, exporter_secret);
+         return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying equivalence truncate(truncate_to_Nn)
+  - Equivalence truncate(truncate_to_Nn) with variables: r_4 -> h
+yields
+
+Game 24 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         k_1 <-R key_t;
+         k_2 <-R nonce_t;
+         nonce: nonce_t <- k_2;
+         r_5 <-R expand_t;
+         exporter_secret: extract_t <- truncate_to_Nh(r_5);
+         r_1: keys_t <- concat(k_1, nonce, exporter_secret);
+         return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying remove assignments of findcond
+  - Remove assignments on nonce (definition removed, all usages removed)
+yields
+
+Game 25 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         k_1 <-R key_t;
+         k_2 <-R nonce_t;
+         r_5 <-R expand_t;
+         exporter_secret: extract_t <- truncate_to_Nh(r_5);
+         r_1: keys_t <- concat(k_1, k_2, exporter_secret);
+         return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying equivalence truncate(truncate_to_Nh)
+  - Equivalence truncate(truncate_to_Nh) with variables: r_5 -> h
+yields
+
+Game 26 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         k_1 <-R key_t;
+         k_2 <-R nonce_t;
+         k_3 <-R extract_t;
+         exporter_secret: extract_t <- k_3;
+         r_1: keys_t <- concat(k_1, k_2, exporter_secret);
+         return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying remove assignments of findcond
+  - Remove assignments on exporter_secret (definition removed, all usages removed)
+yields
+
+Game 27 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         k_1 <-R key_t;
+         k_2 <-R nonce_t;
+         k_3 <-R extract_t;
+         r_1: keys_t <- concat(k_1, k_2, k_3);
+         return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying equivalence concat_random
+  - Equivalence concat_random with variables: k_3 -> k3, k_2 -> k2, k_1 -> k1
+yields
+
+Game 28 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(r_1[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(r_1[l_1])
+       else
+         k_4 <-R keys_t;
+         r_1: keys_t <- k_4;
+         return(r_1)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying remove assignments of findcond
+  - Remove assignments on r_1 (definition removed, all usages removed)
+yields
+
+Game 29 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+ {10}  find [unique] l_1 = l <= N suchthat defined(k_4[l], k_4[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(k_4[l_1])
+       else
+         k_4 <-R keys_t;
+         return(k_4)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Applying simplify
+  - Simplification pass
+    - Replaced defined condition k_4[l], k_4[l], pskID[l], psk_1[l], info_4[l], mode_1[l] with k_4[l], pskID[l], psk_1[l], info_4[l], mode_1[l] in find at 10
+yields
+
+Game 30 is
+     Ostart() :=
+     cr_key_2 <-R cr_key_t;
+     return(cr_key_2);
+     ((
+       foreach i <= N do
+       Oprf(mode_1: mode_t, info_4: bitstring, psk_1: bitstring, pskID: bitstring) :=
+       find [unique] l_1 = l <= N suchthat defined(k_4[l], pskID[l], psk_1[l], info_4[l], mode_1[l]) && (mode_1[l] = mode_1) && (info_4[l] = info_4) && (psk_1[l] = psk_1) && (pskID[l] = pskID) then
+         return(k_4[l_1])
+       else
+         k_4 <-R keys_t;
+         return(k_4)
+     ) | (
+       OH() :=
+       return(cr_key_2)
+     ))
+
+
+Proved indistinguishability between game 30 and game 2
+Game 30 is the same as game 2.
+Adv[Game 2: indistinguishability from game 2] <= 0 + Adv[Game 2: indistinguishability from game 2]
+Adv[Game 2: indistinguishability from game 2] <= 0
+Adv[Game 1: indistinguishability from game 30] <= P_hashcoll(time_1) + P_hashcoll(time_2) + P_hashcoll(time_3) + N * P_PRF_Expand(time_4, 3 + 3 * N, max(maxlength(game 14: labeledInfo_2), maxlength(game 14: labeledInfo_1), maxlength(game 14: labeledInfo))) + P_PRF_Extract(time_5, N, maxlength(game 9: labeled_IKM)) + Adv[Game 30: indistinguishability from game 30]
+Adv[Game 30: indistinguishability from game 30] <= 0
+RESULT Proved indistinguishability between game 1 and game 2 up to probability P_hashcoll(time_1) + P_hashcoll(time_2) + P_hashcoll(time_3) + N * P_PRF_Expand(time_4, 3 + 3 * N, max(maxlength(game 14: labeledInfo_2), maxlength(game 14: labeledInfo_1), maxlength(game 14: labeledInfo))) + P_PRF_Extract(time_5, N, maxlength(game 9: labeled_IKM))
+RESULT time_1 = time + time(context for game 18)
+RESULT time_2 = time + time(context for game 16)
+RESULT time_3 = time + time(context for game 15)
+RESULT time_4 = time(context for game 14) + time + (-1 + N) * max((3 * N + 3) * time(Expand_PRF, max(maxlength(game 14: labeledInfo_2), maxlength(game 14: labeledInfo_1), maxlength(game 14: labeledInfo))), (9 + 18 * N + 9 * N * N) * time(= bitstring, max(maxlength(game 15: x_O_6), maxlength(game 15: x_O_5), maxlength(game 15: x_O_4), maxlength(game 15: x_O_3), maxlength(game 15: x_O_2), maxlength(game 15: x_O_1)), max(maxlength(game 15: x_O_6), maxlength(game 15: x_O_5), maxlength(game 15: x_O_4), maxlength(game 15: x_O_3), maxlength(game 15: x_O_2), maxlength(game 15: x_O_1))))
+RESULT time_5 = time(context for game 9) + time
+RESULT time(context for game 9) = N * N * time(= bitstring, maxlength(game 9: info_4), maxlength(game 9: info_4)) + N * N * time(= bitstring, maxlength(game 9: psk_1), maxlength(game 9: psk_1)) + N * N * time(= bitstring, maxlength(game 9: pskID), maxlength(game 9: pskID)) + N * time(concat) + N * time(truncate_to_Nh) + N * time(Expand_PRF, maxlength(game 9: labeledInfo_2)) + 3 * N * time(concat_Expand, maxlength(game 9: key_schedule_context)) + N * time(truncate_to_Nn) + N * time(Expand_PRF, maxlength(game 9: labeledInfo_1)) + N * time(truncate_to_Nk) + N * time(Expand_PRF, maxlength(game 9: labeledInfo)) + N * time(concat_PRF, maxlength(game 9: psk_1)) + N * time(concat_KeySched) + N * time(Extract_CR, maxlength(game 9: labeled_input_1)) + N * time(concat_CR, maxlength(game 9: info_4)) + N * time(Extract_CR, maxlength(game 9: labeled_input)) + N * time(concat_CR, maxlength(game 9: pskID))
+RESULT time(context for game 14) = N * N * time(= bitstring, maxlength(game 14: info_4), maxlength(game 14: info_4)) + 2 * N * N * time(= bitstring, maxlength(game 14: psk_1), maxlength(game 14: psk_1)) + N * N * time(= bitstring, maxlength(game 14: pskID), maxlength(game 14: pskID)) + N * time(concat) + N * time(truncate_to_Nh) + 3 * N * time(concat_Expand, maxlength(game 14: key_schedule_context)) + N * time(truncate_to_Nn) + N * time(truncate_to_Nk) + N * time(concat_KeySched) + N * time(Extract_CR, maxlength(game 14: labeled_input_1)) + N * time(concat_CR, maxlength(game 14: info_4)) + N * time(Extract_CR, maxlength(game 14: labeled_input)) + N * time(concat_CR, maxlength(game 14: pskID))
+RESULT time(context for game 15) = N * N * time(= bitstring, maxlength(game 15: info_4), maxlength(game 15: info_4)) + 2 * N * N * time(= bitstring, maxlength(game 15: psk_1), maxlength(game 15: psk_1)) + N * N * time(= bitstring, maxlength(game 15: pskID), maxlength(game 15: pskID)) + N * time(concat) + N * time(truncate_to_Nh) + N * time(= bitstring, maxlength(game 15: x_O_3), maxlength(game 15: x_O_1)) + N * time(= bitstring, maxlength(game 15: x_O_3), maxlength(game 15: x_O_2)) + N * time(= bitstring, maxlength(game 15: x_O_3), maxlength(game 15: x_O_3)) + N * N * time(= bitstring, maxlength(game 15: x_O_3), maxlength(game 15: x_O_4)) + N * N * time(= bitstring, maxlength(game 15: x_O_3), maxlength(game 15: x_O_5)) + N * N * time(= bitstring, maxlength(game 15: x_O_3), maxlength(game 15: x_O_6)) + 3 * N * time(concat_Expand, maxlength(game 15: key_schedule_context)) + N * time(truncate_to_Nn) + N * time(= bitstring, maxlength(game 15: x_O_2), maxlength(game 15: x_O_1)) + N * time(= bitstring, maxlength(game 15: x_O_2), maxlength(game 15: x_O_2)) + N * time(= bitstring, maxlength(game 15: x_O_2), maxlength(game 15: x_O_3)) + N * N * time(= bitstring, maxlength(game 15: x_O_2), maxlength(game 15: x_O_4)) + N * N * time(= bitstring, maxlength(game 15: x_O_2), maxlength(game 15: x_O_5)) + N * N * time(= bitstring, maxlength(game 15: x_O_2), maxlength(game 15: x_O_6)) + N * time(truncate_to_Nk) + N * time(= bitstring, maxlength(game 15: x_O_1), maxlength(game 15: x_O_1)) + N * time(= bitstring, maxlength(game 15: x_O_1), maxlength(game 15: x_O_2)) + N * time(= bitstring, maxlength(game 15: x_O_1), maxlength(game 15: x_O_3)) + N * N * time(= bitstring, maxlength(game 15: x_O_1), maxlength(game 15: x_O_4)) + N * N * time(= bitstring, maxlength(game 15: x_O_1), maxlength(game 15: x_O_5)) + N * N * time(= bitstring, maxlength(game 15: x_O_1), maxlength(game 15: x_O_6)) + N * time(= bitstring, maxlength(game 15: x_O_6), maxlength(game 15: x_O_1)) + N * time(= bitstring, maxlength(game 15: x_O_6), maxlength(game 15: x_O_2)) + N * time(= bitstring, maxlength(game 15: x_O_6), maxlength(game 15: x_O_3)) + N * N * time(= bitstring, maxlength(game 15: x_O_6), maxlength(game 15: x_O_4)) + N * N * time(= bitstring, maxlength(game 15: x_O_6), maxlength(game 15: x_O_5)) + N * N * time(= bitstring, maxlength(game 15: x_O_6), maxlength(game 15: x_O_6)) + N * time(= bitstring, maxlength(game 15: x_O_5), maxlength(game 15: x_O_1)) + N * time(= bitstring, maxlength(game 15: x_O_5), maxlength(game 15: x_O_2)) + N * time(= bitstring, maxlength(game 15: x_O_5), maxlength(game 15: x_O_3)) + N * N * time(= bitstring, maxlength(game 15: x_O_5), maxlength(game 15: x_O_4)) + N * N * time(= bitstring, maxlength(game 15: x_O_5), maxlength(game 15: x_O_5)) + N * N * time(= bitstring, maxlength(game 15: x_O_5), maxlength(game 15: x_O_6)) + N * time(= bitstring, maxlength(game 15: x_O_4), maxlength(game 15: x_O_1)) + N * time(= bitstring, maxlength(game 15: x_O_4), maxlength(game 15: x_O_2)) + N * time(= bitstring, maxlength(game 15: x_O_4), maxlength(game 15: x_O_3)) + N * N * time(= bitstring, maxlength(game 15: x_O_4), maxlength(game 15: x_O_4)) + N * N * time(= bitstring, maxlength(game 15: x_O_4), maxlength(game 15: x_O_5)) + N * N * time(= bitstring, maxlength(game 15: x_O_4), maxlength(game 15: x_O_6)) + N * time(concat_KeySched) + N * time(Extract_CR, maxlength(game 15: labeled_input_1)) + N * time(concat_CR, maxlength(game 15: info_4)) + N * time(Extract_CR, maxlength(game 15: labeled_input)) + N * time(concat_CR, maxlength(game 15: pskID))
+RESULT time(context for game 16) = N * N * time(= bitstring, maxlength(game 16: info_4), maxlength(game 16: info_4)) + 2 * N * N * time(= bitstring, maxlength(game 16: psk_1), maxlength(game 16: psk_1)) + N * N * time(= bitstring, maxlength(game 16: pskID), maxlength(game 16: pskID)) + N * time(concat) + N * time(truncate_to_Nh) + 3 * N * time(concat_Expand, maxlength(game 16: key_schedule_context)) + N * time(truncate_to_Nn) + N * time(truncate_to_Nk) + N * time(= bitstring, maxlength(game 16: x_O_6), maxlength(game 16: x_O_3)) + N * N * time(= bitstring, maxlength(game 16: x_O_6), maxlength(game 16: x_O_6)) + N * time(= bitstring, maxlength(game 16: x_O_5), maxlength(game 16: x_O_2)) + N * N * time(= bitstring, maxlength(game 16: x_O_5), maxlength(game 16: x_O_5)) + N * time(= bitstring, maxlength(game 16: x_O_4), maxlength(game 16: x_O_1)) + N * N * time(= bitstring, maxlength(game 16: x_O_4), maxlength(game 16: x_O_4)) + N * time(concat_KeySched) + N * time(Extract_CR, maxlength(game 16: labeled_input_1)) + N * time(concat_CR, maxlength(game 16: info_4)) + N * time(Extract_CR, maxlength(game 16: labeled_input)) + N * time(concat_CR, maxlength(game 16: pskID))
+RESULT time(context for game 18) = N * N * time(= bitstring, maxlength(game 18: info_4), maxlength(game 18: info_4)) + 2 * N * N * time(= bitstring, maxlength(game 18: psk_1), maxlength(game 18: psk_1)) + N * N * time(= bitstring, maxlength(game 18: pskID), maxlength(game 18: pskID)) + N * time(concat) + N * time(truncate_to_Nh) + N * time(truncate_to_Nn) + N * time(truncate_to_Nk) + 3 * N * time(concat_Expand, maxlength(game 18: key_schedule_context)) + N * N * time(= bitstring, maxlength(game 18: labeledInfo), maxlength(game 18: labeledInfo)) + N * N * time(= bitstring, maxlength(game 18: labeledInfo_1), maxlength(game 18: x_O_5)) + N * N * time(= bitstring, maxlength(game 18: labeledInfo_2), maxlength(game 18: x_O_6)) + N * time(concat_KeySched) + N * time(Extract_CR, maxlength(game 18: labeled_input_1)) + N * time(concat_CR, maxlength(game 18: info_4)) + N * time(Extract_CR, maxlength(game 18: labeled_input)) + N * time(concat_CR, maxlength(game 18: pskID))
+All queries proved.

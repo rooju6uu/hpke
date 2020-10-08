@@ -1,0 +1,232 @@
+(* This type denotes the two-byte indication of length used
+   in LabeledExpand. *)
+type length_t [fixed].
+const Nk: length_t.
+const Nn: length_t.
+const Nh: length_t.
+
+(* This type denotes the labels used along with LabeledExtract. *)
+type label_extract_t [fixed].
+const label_psk_id_hash: label_extract_t.
+const label_info_hash: label_extract_t.
+const label_psk_hash: label_extract_t.
+const label_secret: label_extract_t.
+
+(* This type denotes the labels used along with LabeledExpand. *)
+type label_expand_t [fixed].
+const label_key: label_expand_t.
+const label_nonce: label_expand_t.
+const label_exp: label_expand_t.
+
+(* These types denote the RFC-wide constants binding to the name
+   of the protocol and the used ciphersuite. *)
+type label_protocol_t [fixed].
+const RFCXXXX: label_protocol_t.
+type suite_id_t [fixed].
+const suite_id: suite_id_t.
+
+(* This type denotes the mode (variant) of HPKE, which is used
+   in the KeySchedule's context within LabeledExpand. *)
+type mode_t [fixed].
+const mode_base: mode_t.
+const mode_psk: mode_t.
+const mode_auth: mode_t.
+const mode_auth_psk: mode_t.
+
+fun concat_CR(label_protocol_t, suite_id_t, label_extract_t, bitstring): bitstring [data].
+
+(* We expect that the KEM provides a value from a uniform distribution
+   over the bitstrings of a fixed length. *)
+type kemkey_t [fixed,large].
+
+fun concat_PRF(label_protocol_t, suite_id_t, label_extract_t, bitstring): bitstring [data].
+
+(** KDF **)
+
+type key_t [large,fixed].
+type nonce_t [large,fixed].
+
+type cr_key_t [fixed].
+type cr_salt_t [fixed].
+const empty: cr_salt_t.
+type cr_output_t [fixed].
+proba P_hashcoll.
+expand CollisionResistant_hash_2(
+  cr_key_t,
+  cr_salt_t,
+  bitstring,
+  cr_output_t,
+  Extract_CR,
+  Extract_CR_oracle,
+  P_hashcoll
+).
+
+
+letfun LabeledExtract_CR(cr_key: cr_key_t, salt: cr_salt_t, label: label_extract_t, input: bitstring) =
+  let labeled_input = concat_CR(RFCXXXX, suite_id, label, input) in
+  Extract_CR(cr_key, salt, labeled_input).
+
+
+type extract_t [fixed,large].
+proba P_PRF_Extract.
+expand PRF_1(
+  kemkey_t,
+  bitstring,
+  extract_t,
+  Extract_PRF,
+  P_PRF_Extract
+).
+
+letfun LabeledExtract_PRF(salt: kemkey_t, label: label_extract_t, IKM: bitstring) =
+  let labeled_IKM = concat_PRF(RFCXXXX, suite_id, label, IKM) in
+  Extract_PRF(salt, labeled_IKM).
+
+
+
+proba P_PRF_Expand.
+type expand_t [fixed,large].
+  (* This covers the maximum length of HKDF-Expand's output. For
+     RFC 5869, this is 255*Nh. *)
+expand PRF_1(
+  extract_t,
+  bitstring,
+  expand_t,
+  Expand_PRF,
+  P_PRF_Expand
+).
+
+
+expand truncate(expand_t, nonce_t, truncate_to_Nn).
+expand truncate(expand_t, key_t, truncate_to_Nk).
+expand truncate(expand_t, extract_t, truncate_to_Nh).
+
+fun concat_Expand(length_t, label_protocol_t, suite_id_t, label_expand_t, bitstring): bitstring [data].
+  (* The three labels for key, nonce, exp might have different lengths, but
+     the combination length L and length of the label is unique. *)
+
+letfun LabeledExpand_PRF(PRK: extract_t, label: label_expand_t, info: bitstring, L: length_t) =
+  let labeledInfo = concat_Expand(L, RFCXXXX, suite_id, label, info) in
+  Expand_PRF(PRK, labeledInfo).
+
+letfun LabeledExpand_PRF_Nk(PRK: extract_t, label: label_expand_t, info: bitstring, L: length_t) =
+  truncate_to_Nk(LabeledExpand_PRF(PRK, label, info, L)).
+letfun LabeledExpand_PRF_Nn(PRK: extract_t, label: label_expand_t, info: bitstring, L: length_t) =
+  truncate_to_Nn(LabeledExpand_PRF(PRK, label, info, L)).
+letfun LabeledExpand_PRF_Nh(PRK: extract_t, label: label_expand_t, info: bitstring, L: length_t) =
+  truncate_to_Nh(LabeledExpand_PRF(PRK, label, info, L)).
+
+(* Encryption Context *)
+
+fun concat_KeySched(mode_t, cr_output_t, cr_output_t): bitstring [data].
+
+type keys_t [fixed,large].
+fun concat(key_t, nonce_t, extract_t): keys_t [data].
+
+equiv(concat_random)
+  new k1: key_t;
+  new k2: nonce_t;
+  new k3: extract_t;
+  Oconcat() := return(concat(k1, k2, k3))
+<=(0)=>
+  new k: keys_t;
+  Oconcat() := return(k).
+
+
+
+letfun KeySchedule(
+    cr_key: cr_key_t,
+    mode: mode_t,
+    shared_secret: kemkey_t,
+    info: bitstring,
+    psk: bitstring,
+    psk_id: bitstring
+  ) =
+
+  let psk_id_hash = LabeledExtract_CR(cr_key, empty, label_psk_id_hash, psk_id) in
+  let info_hash = LabeledExtract_CR(cr_key, empty, label_info_hash, info) in
+  let key_schedule_context = concat_KeySched(mode, psk_id_hash, info_hash) in
+
+  (* secret is a reserved keyword in CryptoVerif. *)
+  let secrett: extract_t =
+    LabeledExtract_PRF(shared_secret, label_secret, psk) in
+
+  let key: key_t =
+    LabeledExpand_PRF_Nk(secrett, label_key,   key_schedule_context, Nk) in
+  let nonce: nonce_t =
+    LabeledExpand_PRF_Nn(secrett, label_nonce, key_schedule_context, Nn) in
+  let exporter_secret: extract_t =
+    LabeledExpand_PRF_Nh(secrett, label_exp,   key_schedule_context, Nh) in
+
+  (* The following line defines the return value of the function: *)
+  concat(key, nonce, exporter_secret).
+
+
+proof {
+  out_game "l01.out.cv";
+  start_from_other_end;
+  out_game "r01.out.cv";
+  start_from_other_end;
+
+  insert after "Oprf("
+    "find [unique] l_1 = l <= N suchthat
+      defined(else_br[l], mode_1[l], info_4[l], psk_1[l], pskID[l])
+      && (mode_1[l] = mode_1)
+      && (info_4[l] = info_4)
+      && (psk_1[l] = psk_1)
+      && (pskID[l] = pskID) then else else_br <- true";
+  out_game "l02.out.cv" occ;
+  insert before_nth 2 "return(concat("
+    "r_1 <- concat(key, nonce, exporter_secret)";
+  use_variable "r_1";
+  out_game "l03.out.cv" occ;
+  replace at 2 "return{[0-9]+}({[0-9]+}concat("
+    "r_1[l_1]";
+  out_game "l04.out.cv";
+  all_simplify;
+  (* The next steps could also be applied automatically by "auto" *)
+  crypto prf(Extract_PRF);
+  crypto prf(Expand_PRF) **;
+  crypto truncate(truncate_to_Nk);
+  crypto truncate(truncate_to_Nn);
+  crypto truncate(truncate_to_Nh);
+  crypto concat_random;
+  success
+}
+
+param N.
+
+equivalence
+  Ostart() :=
+    k <-R kemkey_t;
+    cr_key <-R cr_key_t;
+    return(cr_key);
+    (
+      foreach i <= N do (
+        Oprf(mode: mode_t, info: bitstring, psk: bitstring, pskID: bitstring) :=
+          return(KeySchedule(cr_key, mode, k, info, psk, pskID))
+      ) |
+      (* The next oracle gives the key of the collision resistant hash function
+	 to the adversary *)
+      run Extract_CR_oracle(cr_key)
+    )
+
+  Ostart() :=
+    cr_key <-R cr_key_t;
+    return(cr_key);
+    (
+      foreach i <= N do (
+        Oprf(mode: mode_t, info: bitstring, psk: bitstring, pskID: bitstring) :=
+          find[unique] j <= N suchthat
+              defined(mode[j], info[j], psk[j], pskID[j], r[j])
+              && mode[j] = mode
+              && info[j] = info
+              && psk[j] = psk
+              && pskID[j] = pskID then
+            return(r[j])
+          else
+            new r: keys_t; return(r)
+      ) |
+      (* The next oracle gives the key of the collision resistant hash function
+	 to the adversary *)
+      run Extract_CR_oracle(cr_key)
+    )
