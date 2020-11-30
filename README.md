@@ -7,7 +7,10 @@ The “RFC” we are referring to in this README, is
 
 ### Installation of CryptoVerif
 
-You can get CryptoVerif from [its website](https://cryptoverif.inria.fr).
+These scripts rely on CryptoVerif version 2.03, which is provided in
+this repository ([source code](cryptoverif2.03.tar.gz),
+[Windows binaries](cryptoverifbin2.03.zip)) and can also be downloaded
+from the [CryptoVerif website](https://cryptoverif.inria.fr).
 We refer to the README in the downloadable archive for installation
 instructions.
 
